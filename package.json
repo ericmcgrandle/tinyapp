@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ericmcgrandle/tinyapp/issues"
   },
-  "homepage": "https://github.com/ericmcgrandle/tinyapp#readme"
+  "homepage": "https://github.com/ericmcgrandle/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
