@@ -18,14 +18,11 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-
 //Generate 'random' url
 const generateRandomString = () => {
   let str = Math.random().toString(36).substring(7);
   return str;
 };
-
-
 
 
 //app.get functions
@@ -53,16 +50,28 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const longURL = req.body.longURL;
-  const shortURL = generateRandomString();
+  let shortURL = generateRandomString();
 
   if (Object.values(urlDatabase).indexOf(longURL) === -1) {
     urlDatabase[shortURL] = longURL;
+ } else {
+    shortURL = Object.keys(urlDatabase).find(key => urlDatabase[key] === longURL);
  }
-  
-  console.log(urlDatabase);
-  res.send("OK");
 
+ res.redirect(`/u/${shortURL}`);
 
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+
+  if (!urlDatabase[shortURL]){
+    console.log('Attempt at accessing a URL that does not exist');
+    res.redirect('/urls')
+  }
+
+  const longURL = urlDatabase[shortURL];
+  res.redirect(longURL);
 });
 
 
