@@ -52,8 +52,17 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);
+  const longURL = req.body.longURL;
+  const shortURL = generateRandomString();
+
+  if (Object.values(urlDatabase).indexOf(longURL) === -1) {
+    urlDatabase[shortURL] = longURL;
+ }
+  
+  console.log(urlDatabase);
   res.send("OK");
+
+
 });
 
 
