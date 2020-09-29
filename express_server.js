@@ -46,7 +46,6 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const id = req.cookies['user_id'];
-  console.log(users[id]);
   const templateVars = { 
     urls: urlDatabase,
     user: users[id]
@@ -119,9 +118,13 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+  console.log(users);
   const email = req.body.username;
+  console.log('email :', email);
+
   for (user in users){
     if (users[user].email === email){
+      res.cookie('user_id', users[user].id);
       res.redirect('/urls');
       return;
     }
@@ -130,7 +133,7 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 });
 
@@ -151,8 +154,6 @@ app.post('/register', (req, res) => {
 
   //add to object
   users[userId] = { id: userId, email: userEmail, password: userPassword };
-  console.log(users);
-
   res.redirect('/urls');
 
 
