@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
+const { request } = require("express");
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -78,6 +79,19 @@ app.get("/u/:shortURL", (req, res) => {
 app.post(`/urls/:shortURL/delete`, (req, res) => {
   const shortURL = req.params.shortURL;
   delete urlDatabase[shortURL];
+  res.redirect('/urls');
+});
+
+app.get(`/urls/:shortURL/update`, (req, res) => {
+  const shortURL = req.params.shortURL;
+  res.redirect(`/urls/${shortURL}`);
+});  
+
+app.post(`/urls/:shortURL/update`, (req, res) => {
+
+  const longURL = req.body.update;
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = longURL;
   res.redirect('/urls');
 });
 
