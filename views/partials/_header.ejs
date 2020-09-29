@@ -12,13 +12,11 @@
     </div>
     <div>
       <% if (!username) { %>
-        <!-- LOCATION NEEDS TO BE FIXED -->
         <form class="form-inline" method="POST" action="/login">
           <input class="form-control" type="text" name="username" placeholder="username" style="width: 150px;">
           <button type="submit" class="btn btn-primary">login</button>
         </form>
       <% } else { %>
-        <!-- LOCATION NEEDS TO BE FIXED -->
         <p class="form-inline" style="margin: 0em 1em;"> <%= username %> </p>
         <form class="form-inline" method="POST" action="/logout">
           <button type="submit" class="btn btn-primary" style="margin: 0em 1em;">Logout</button>
