@@ -34,6 +34,15 @@ const generateRandomString = () => {
   return str;
 };
 
+const lookupEmail = (email) => {
+  for (user in users){
+    if (Object.values(users[user]).includes(email)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 
 //app.get functions
 app.get("/", (req, res) => {
@@ -141,8 +150,17 @@ app.post('/register', (req, res) => {
 
   //If passwords did not match
   if (req.body.password !== req.body['password-repeat']) {
-    console.log('Passwords did not match');
     //TODO, add message to html form that passwords did not match
+    console.log('Passwords did not match');
+    res.statusCode = 400;
+    res.redirect('/register');
+    return;
+  }
+
+  if (lookupEmail(req.body.email)) {
+    //TODO, add message to html form that user already exists
+    console.log('User already exists');
+    res.statusCode = 400;
     res.redirect('/register');
     return;
   }
