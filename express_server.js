@@ -74,6 +74,10 @@ app.get(`/urls/:shortURL/update`, (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });  
 
+app.get('/register', (req, res) => {
+  res.render("register");
+});
+
 
 //app.post functions
 app.post("/urls", (req, res) => {
