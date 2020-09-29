@@ -2,8 +2,6 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
-const { request } = require("express");
-
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -92,7 +90,7 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
   const longURL = req.body.update;
   const shortURL = req.params.shortURL;
   urlDatabase[shortURL] = longURL;
-  res.redirect('/urls');
+  res. redirect('/urls');
 });
 
 
