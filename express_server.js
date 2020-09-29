@@ -127,6 +127,7 @@ app.post('/logout', (req, res) => {
 
 app.post('/register', (req, res) => {
 
+  //If passwords did not match
   if (req.body.password !== req.body['password-repeat']) {
     console.log('Passwords did not match');
     //TODO, add message to html form that passwords did not match
@@ -137,9 +138,10 @@ app.post('/register', (req, res) => {
   const userEmail = req.body.email;
   const userPassword = req.body.password;
   const userId = generateRandomString();
+  res.cookie('user_id', userId);
 
+  //add to object
   users[userId] = { id: userId, email: userEmail, password: userPassword };
-
   console.log(users);
 
   res.redirect('/urls');
