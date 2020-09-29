@@ -10,10 +10,10 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
 
         <% if (!username) { %>
+          <!-- LOCATION NEEDS TO BE FIXED -->
           <form class="form-inline" method="POST" action="/login">
-            <label for="username">Enter a username:</label>
-            <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 0em 1em">
-            <button type="submit" class="btn btn-primary">Sign in</button>
+            <input class="form-control" type="text" name="username" placeholder="username" style="width: 150px;">
+            <button type="submit" class="btn btn-primary">login</button>
           </form>
         <% } else { %>
           <!-- LOCATION NEEDS TO BE FIXED -->
