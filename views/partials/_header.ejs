@@ -9,7 +9,7 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
 
-        <% if (!username) { %>
+        <% if (!user) { %>
           <!-- LOCATION NEEDS TO BE FIXED -->
           <form class="form-inline" method="POST" action="/login">
             <input class="form-control" type="text" name="username" placeholder="username" style="width: 150px;">
@@ -17,7 +17,7 @@
           </form>
         <% } else { %>
           <!-- LOCATION NEEDS TO BE FIXED -->
-          <p class="nav-item" style="margin: 0em 1em;"> <%= username %> </p>
+          <p class="nav-item" style="margin: 0em 1em;"> <%= user.email %> </p>
           <form class="form-inline" method="POST" action="/logout">
             <button type="submit" class="btn btn-primary" style="margin: 0em 1em;">Logout</button>
           </form>

@@ -45,9 +45,11 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const id = req.cookies['user_id'];
+  console.log(users[id]);
   const templateVars = { 
     urls: urlDatabase,
-    username: req.cookies["username"]
+    user: users[id]
   };
   res.render("urls_index", templateVars);
 });
@@ -57,10 +59,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  const id = req.cookies['user_id'];
   const templateVars = { 
     shortURL: req.params.shortURL, 
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies["username"]
+    user: users[id]
   };
   res.render("urls_show", templateVars);
 });
@@ -116,8 +119,14 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  const email = req.body.username;
+  for (user in users){
+    if (users[user].email === email){
+      res.redirect('/urls');
+      return;
+    }
+  }
+  res.redirect('/register'); 
 });
 
 app.post('/logout', (req, res) => {
