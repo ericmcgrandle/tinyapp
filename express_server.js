@@ -14,10 +14,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-//Listen to server on PORT
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
+//Database for users
+const users = {
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+};
 
 //Generate 'random' url
 const generateRandomString = () => {
@@ -36,7 +45,6 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  
   const templateVars = { 
     urls: urlDatabase,
     username: req.cookies["username"]
@@ -117,9 +125,33 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls');
 });
 
+app.post('/register', (req, res) => {
+
+  if (req.body.password !== req.body['password-repeat']) {
+    console.log('Passwords did not match');
+    //TODO, add message to html form that passwords did not match
+    res.redirect('/register');
+    return;
+  }
+
+  const userEmail = req.body.email;
+  const userPassword = req.body.password;
+  const userId = generateRandomString();
+
+  users[userId] = { id: userId, email: userEmail, password: userPassword };
+
+  console.log(users);
+
+  res.redirect('/urls');
+
+
+
+});
 
 
 
 
-
-
+//Listen to server on PORT
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
