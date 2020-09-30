@@ -18,18 +18,18 @@ const urlDatabase = {
 //Database for users
 const users = {
   "userRandomID": {
-    id: "userRandomID", 
+    ID: "userRandomID", 
     email: "user@example.com", 
     password: "user"
   },
  "user2RandomID": {
-    id: "user2RandomID", 
+    ID: "user2RandomID", 
     email: "user2@example.com", 
     password: "user2"
   }
 };
 
-//Generate 'random' url / id
+//Generate 'random' url / ID
 const generateRandomString = () => {
   let str = Math.random().toString(36).substring(7);
   return str;
@@ -53,17 +53,17 @@ const lookupURL = (longURL) => {
   return false;
 };
 
-const isLoggedIn = (user_id) => {
+const isLoggedIn = (user_ID) => {
   for (user in users) {
-    if (user === user_id) {
+    if (user === user_ID) {
       return true;
     }
   }
   return false;
 };
 
-const filterUrl = (user_id) => {
-  const filtered = Object.values(urlDatabase).filter(key => key.userID === user_id);
+const filterUrl = (user_ID) => {
+  const filtered = Object.values(urlDatabase).filter(key => key.userID === user_ID);
   const obj = {};
   
   for (url of filtered){
@@ -82,9 +82,9 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/urls", (req, res) => {
 
-  const id = req.cookies['user_id'];
+  const ID = req.cookies['user_ID'];
 
-  if (!isLoggedIn(id)) {
+  if (!isLoggedIn(ID)) {
     templateVars = {
       urls: null,
       user: null 
@@ -92,10 +92,10 @@ app.get("/urls", (req, res) => {
     res.render('urls_index', templateVars);
   } else {
 
-  const filteredURLS = filterUrl(id);
+  const filteredURLS = filterUrl(ID);
   const templateVars = { 
     urls: filteredURLS,
-    user: users[id]
+    user: users[ID]
   };
   res.render("urls_index", templateVars);
 }
@@ -104,26 +104,26 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
 
-  if (!req.cookies['user_id']){
+  if (!req.cookies['user_ID']){
     res.redirect('/login');
     return;
   }
 
-  const id = req.cookies['user_id'];
+  const ID = req.cookies['user_ID'];
   const templateVars = { 
     urls: urlDatabase,
-    user: users[id]
+    user: users[ID]
   };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
 
-   const id = req.cookies['user_id'];
+  const ID = req.cookies['user_ID'];
   const templateVars = { 
     shortURL: req.params.shortURL, 
     longURL: urlDatabase[req.params.shortURL].longURL,
-    user: users[id]
+    user: users[ID]
   };
   res.render("urls_show", templateVars);
 });
@@ -146,17 +146,17 @@ app.get(`/urls/:shortURL/update`, (req, res) => {
 });  
 
 app.get('/register', (req, res) => {
-  const id = req.cookies['user_id'];
+  const ID = req.cookies['user_ID'];
   const templateVars = { 
-    user: users[id]
+    user: users[ID]
   };
   res.render("register", templateVars);
 });
 
 app.get('/login', (req, res) => {
-  const id = req.cookies['user_id'];
+  const ID = req.cookies['user_ID'];
   const templateVars = { 
-    user: users[id]
+    user: users[ID]
   };
   res.render("login", templateVars);
 });
@@ -169,7 +169,8 @@ app.get('*', (req, res) => {
 
 //app.post functions
 app.post("/urls", (req, res) => {
-  const id = req.cookies['user_id'];
+  const ID = req.cookies['user_ID'];
+  console.log(ID);
   const longURL = req.body.longURL;
   let shortURL = generateRandomString();
 
@@ -177,13 +178,13 @@ app.post("/urls", (req, res) => {
   const exists = lookupURL(longURL);
 
   if (!exists) {
-    urlDatabase[shortURL] = { longURL: longURL, userId: id };
+    urlDatabase[shortURL] = { longURL: longURL, userId: ID };
   } else {
     shortURL = exists;
   }
 
   res.redirect(`/u/${shortURL}`);
-  // res.redirect('/urls');
+  res.redirect('/urls');
 
 });
 
@@ -194,10 +195,10 @@ app.post(`/urls/:shortURL/delete`, (req, res) => {
 });
 
 app.post(`/urls/:shortURL/update`, (req, res) => {
-  const id = req.cookies['user_id'];
+  const ID = req.cookies['user_ID'];
   const longURL = req.body.update;
   const shortURL = req.params.shortURL;
-  urlDatabase[shortURL] = { longURL: longURL, userId: id };
+  urlDatabase[shortURL] = { longURL: longURL, userId: ID };
   res.redirect('/urls');
 });
 
@@ -209,7 +210,7 @@ app.post('/login', (req, res) => {
   //Check if user exists
   if (lookupEmail(email)){
     if (users[user].password === password){
-      res.cookie('user_id', users[user].id);
+      res.cookie('user_ID', users[user].ID);
       res.redirect('/urls');
       return;
     } else {
@@ -224,7 +225,7 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-  res.clearCookie('user_id');
+  res.clearCookie('user_ID');
   res.redirect('/urls');
 });
 
@@ -252,10 +253,10 @@ app.post('/register', (req, res) => {
   const userEmail = req.body.email;
   const userPassword = req.body.password;
   const userId = generateRandomString();
-  res.cookie('user_id', userId);
+  res.cookie('user_ID', userId);
 
   //add to object
-  users[userId] = { id: userId, email: userEmail, password: userPassword };
+  users[userId] = { ID: userId, email: userEmail, password: userPassword };
   res.redirect('/urls');
 });
 
