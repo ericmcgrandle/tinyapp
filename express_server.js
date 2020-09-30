@@ -19,7 +19,7 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+    password: "test"
   },
  "user2RandomID": {
     id: "user2RandomID", 
@@ -131,17 +131,24 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  console.log(users);
-  const email = req.body.username;
-  console.log('email :', email);
 
-  for (user in users){
-    if (users[user].email === email){
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  //Check if user exists
+  if (lookupEmail(email)){
+    if (users[user].password === password){
       res.cookie('user_id', users[user].id);
       res.redirect('/urls');
       return;
+    } else {
+      console.log('Wrong password');
+      res.statusCode = 403;
+      res.redirect('/login');
+      return;
     }
   }
+  res.statusCode = 403;
   res.redirect('/register'); 
 });
 
