@@ -3,7 +3,6 @@ const generateRandomString = () => {
   return str;
 };
 
-
 const lookupEmail = (email, users) => {
   for (user in users){
     if (Object.values(users[user]).includes(email)) {
@@ -12,7 +11,6 @@ const lookupEmail = (email, users) => {
   }
   return false;
 };
-
 
 const lookupURL = (longURL, urlDatabase) => {
   for (short in urlDatabase) {
@@ -23,7 +21,6 @@ const lookupURL = (longURL, urlDatabase) => {
   return false;
 };
 
-
 const isLoggedIn = (user_ID, users) => {
   for (user in users) {
     if (user === user_ID) {
@@ -32,7 +29,6 @@ const isLoggedIn = (user_ID, users) => {
   }
   return false;
 };
-
 
 const filterUrl = (user_ID, urlDatabase) => {
   const filtered = Object.values(urlDatabase).filter(key => key.userID === user_ID);
@@ -44,7 +40,6 @@ const filterUrl = (user_ID, urlDatabase) => {
   }
   return obj;
 };
-
 
 
 module.exports = ({ 

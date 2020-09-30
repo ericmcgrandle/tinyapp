@@ -17,8 +17,7 @@ app.use(cookieSession({
 app.set("view engine", "ejs");
 
 
-
-//Database of shortened URL links
+//Database of URL links
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" },
@@ -31,40 +30,44 @@ const hp1 = bcrypt.hashSync(p1, 10);
 const p2 = 'user2';
 const hp2 = bcrypt.hashSync(p2, 10);
 
-
 //Database for users
 const users = {
   "userRandomID": {
-    ID: "userRandomID", 
-    email: "user@example.com", 
+    ID: "userRandomID",
+    email: "user@example.com",
     password: hp1
   },
- "user2RandomID": {
-    ID: "user2RandomID", 
-    email: "user2@example.com", 
+  "user2RandomID": {
+    ID: "user2RandomID",
+    email: "user2@example.com",
     password: hp2
   }
 };
 
 
-//app.get functions
+
+/*
+=================
+app.get functions
+=================
+*/
+
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
 app.get("/urls", (req, res) => {
-
   const ID = req.session.user_id;
 
   if (!helpers.isLoggedIn(ID, users)) {
-    templateVars = {
+    const templateVars = {
       urls: null,
-      user: null 
+      user: null
     };
     res.render('urls_index', templateVars);
   } else {
     const filteredURLS = helpers.filterUrl(ID, urlDatabase);
-    const templateVars = { 
+    const templateVars = {
       urls: filteredURLS,
       user: users[ID]
     };
@@ -75,13 +78,13 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
 
-  if (!req.session.user_id){
+  if (!req.session.user_id) {
     res.redirect('/login');
     return;
   }
 
   const ID = req.session.user_id;
-  const templateVars = { 
+  const templateVars = {
     urls: urlDatabase,
     user: users[ID]
   };
@@ -89,10 +92,9 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-
   const ID = req.session.user_id;
-  const templateVars = { 
-    shortURL: req.params.shortURL, 
+  const templateVars = {
+    shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL].longURL,
     user: users[ID]
   };
@@ -102,23 +104,23 @@ app.get("/urls/:shortURL", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   
-  if (!urlDatabase[shortURL]){
+  if (!urlDatabase[shortURL]) {
     console.log('Attempt at accessing a URL that does not exist');
-    res.redirect('/urls')
+    res.redirect('/urls');
   }
 
-  const longURL = urlDatabase[shortURL].longURL;  
+  const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
 });
 
 app.get(`/urls/:shortURL/update`, (req, res) => {
   const shortURL = req.params.shortURL;
   res.redirect(`/urls/${shortURL}`);
-});  
+});
 
 app.get('/register', (req, res) => {
   const ID = req.session.user_id;
-  const templateVars = { 
+  const templateVars = {
     user: users[ID]
   };
   res.render("register", templateVars);
@@ -126,7 +128,7 @@ app.get('/register', (req, res) => {
 
 app.get('/login', (req, res) => {
   const ID = req.session.user_id;
-  const templateVars = { 
+  const templateVars = {
     user: users[ID]
   };
   res.render("login", templateVars);
@@ -138,7 +140,12 @@ app.get('*', (req, res) => {
 });
 
 
-//app.post functions
+
+/*
+==================
+app.post functions
+==================
+*/
 app.post("/urls", (req, res) => {
   const ID = req.session.user_id;
   const longURL = req.body.longURL;
@@ -162,7 +169,7 @@ app.post(`/urls/:shortURL/delete`, (req, res) => {
   //Check if user is logged in
   const ID = req.session.user_id;
   if (!helpers.isLoggedIn(ID, users)) {
-    response.statusCode = 405;
+    res.statusCode = 405;
     console.log('Tried to delete when not logged in!');
     res.end();
     return;
@@ -177,7 +184,7 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
   //Check if user is logged in
   const ID = req.session.user_id;
   if (!helpers.isLoggedIn(ID, users)) {
-    response.statusCode = 405;
+    res.statusCode = 405;
     console.log('Tried to delete when not logged in!');
     res.end();
     return;
@@ -192,10 +199,10 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
 app.post('/login', (req, res) => {
 
   const email = req.body.email;
-  const password = req.body.password;  
+  const password = req.body.password;
   
   //Check if user exists
-  if (helpers.lookupEmail(email, users)){
+  if (helpers.lookupEmail(email, users)) {
     if (bcrypt.compareSync(password, users[user].password)) {
       req.session.user_id = users[user].ID;
       res.redirect('/urls');
@@ -208,7 +215,7 @@ app.post('/login', (req, res) => {
     }
   }
   res.statusCode = 403;
-  res.redirect('/register'); 
+  res.redirect('/register');
 });
 
 app.post('/logout', (req, res) => {
@@ -246,6 +253,10 @@ app.post('/register', (req, res) => {
   users[userID] = { ID: userID, email: userEmail, password: userPassword };
   res.redirect('/urls');
 });
+
+
+
+
 
 
 
