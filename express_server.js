@@ -97,6 +97,10 @@ app.get('/register', (req, res) => {
   res.render("register");
 });
 
+app.get('/login', (req, res) => {
+  res.render("login");
+});
+
 
 //app.post functions
 app.post("/urls", (req, res) => {
