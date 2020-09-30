@@ -88,10 +88,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+
   const id = req.cookies['user_id'];
   const templateVars = { 
     shortURL: req.params.shortURL, 
-    longURL: urlDatabase[req.params.shortURL],
+    longURL: urlDatabase[req.params.shortURL].longURL,
     user: users[id]
   };
   res.render("urls_show", templateVars);
@@ -163,9 +164,10 @@ app.post(`/urls/:shortURL/delete`, (req, res) => {
 });
 
 app.post(`/urls/:shortURL/update`, (req, res) => {
+  const id = req.cookies['user_id'];
   const longURL = req.body.update;
   const shortURL = req.params.shortURL;
-  urlDatabase[shortURL] = longURL;
+  urlDatabase[shortURL] = { longURL: longURL, userId: id };
   res.redirect('/urls');
 });
 
