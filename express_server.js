@@ -28,7 +28,7 @@ const users = {
   }
 };
 
-//Generate 'random' url
+//Generate 'random' url / id
 const generateRandomString = () => {
   let str = Math.random().toString(36).substring(7);
   return str;
@@ -186,6 +186,7 @@ app.post('/register', (req, res) => {
     return;
   }
 
+  //if user already exists
   if (lookupEmail(req.body.email)) {
     //TODO, add message to html form that user already exists
     console.log('User already exists');
@@ -194,6 +195,7 @@ app.post('/register', (req, res) => {
     return;
   }
 
+  //registration if all good
   const userEmail = req.body.email;
   const userPassword = req.body.password;
   const userId = generateRandomString();
@@ -202,11 +204,7 @@ app.post('/register', (req, res) => {
   //add to object
   users[userId] = { id: userId, email: userEmail, password: userPassword };
   res.redirect('/urls');
-
-
-
 });
-
 
 
 
