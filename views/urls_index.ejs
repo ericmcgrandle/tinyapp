@@ -10,7 +10,11 @@
 <body>
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
-    <h3>My URLs</h3>
+    <% if (urls === null) { %>
+      <h3>My URLs - <a href="/login">Login</a> To See</h3>
+    <% } else { %>
+      <h3>My URLs</h3>
+    <% } %>
     <table class="table">
       <thead>
         <tr>

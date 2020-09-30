@@ -63,9 +63,7 @@ const isLoggedIn = (user_id) => {
 };
 
 const filterUrl = (user_id) => {
-
   const filtered = Object.values(urlDatabase).filter(key => key.userID === user_id);
-
   const obj = {};
   
   for (url of filtered){
@@ -73,13 +71,8 @@ const filterUrl = (user_id) => {
     obj[shortURL] = url;
   }
     
-  // console.log(obj);
   return obj;
-
 };
-
-filterUrl('user2RandomID')
-
 
 
 //app.get functions
