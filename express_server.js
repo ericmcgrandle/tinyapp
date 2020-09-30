@@ -10,8 +10,8 @@ app.set("view engine", "ejs");
 
 //Database of shortened URL links
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 //Database for users
@@ -39,6 +39,16 @@ const lookupEmail = (email) => {
     if (Object.values(users[user]).includes(email)) {
       return true;
     }
+  }
+  return false;
+};
+
+const lookupURL = (longURL) => {
+
+  for (short in urlDatabase) {
+    if (Object.values(urlDatabase[short]).indexOf(longURL) !== -1) {
+      return short;
+    } 
   }
   return false;
 };
@@ -89,13 +99,13 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-
+  
   if (!urlDatabase[shortURL]){
     console.log('Attempt at accessing a URL that does not exist');
     res.redirect('/urls')
   }
 
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[shortURL].longURL;  
   res.redirect(longURL);
 });
 
@@ -128,17 +138,21 @@ app.get('*', (req, res) => {
 
 //app.post functions
 app.post("/urls", (req, res) => {
+  const id = req.cookies['user_id'];
   const longURL = req.body.longURL;
   let shortURL = generateRandomString();
 
-  if (Object.values(urlDatabase).indexOf(longURL) === -1) {
-    urlDatabase[shortURL] = longURL;
- } else {
-    shortURL = Object.keys(urlDatabase).find(key => urlDatabase[key] === longURL);
- }
+  //Check if longURL already exists
+  const exists = lookupURL(longURL);
 
-//  res.redirect(`/u/${shortURL}`);
-res.redirect('/url');
+  if (!exists) {
+    urlDatabase[shortURL] = { longURL: longURL, userId: id };
+  } else {
+    shortURL = exists;
+  }
+
+  res.redirect(`/u/${shortURL}`);
+  // res.redirect('/urls');
 
 });
 
