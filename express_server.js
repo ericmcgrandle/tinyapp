@@ -63,6 +63,12 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+
+  if (!req.cookies['user_id']){
+    res.redirect('/login');
+    return;
+  }
+
   const id = req.cookies['user_id'];
   const templateVars = { 
     urls: urlDatabase,
@@ -131,7 +137,8 @@ app.post("/urls", (req, res) => {
     shortURL = Object.keys(urlDatabase).find(key => urlDatabase[key] === longURL);
  }
 
- res.redirect(`/u/${shortURL}`);
+//  res.redirect(`/u/${shortURL}`);
+res.redirect('/url');
 
 });
 
