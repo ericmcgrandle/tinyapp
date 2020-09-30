@@ -9,9 +9,11 @@
 </head>
 <body>
 
-  <form action="/login" method="POST">
+  <%- include('partials/_header') %>
+
+  <form action="/login" method="POST" style="margin: 1em;">
     
-    <h1> Login </h1>
+    <h2 style="margin: 0.5em 0em;"> Login </h2>
 
     <div class="form-group">
       <label for="email">Email</label>

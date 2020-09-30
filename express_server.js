@@ -63,7 +63,12 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const id = req.cookies['user_id'];
+  const templateVars = { 
+    urls: urlDatabase,
+    user: users[id]
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -94,11 +99,24 @@ app.get(`/urls/:shortURL/update`, (req, res) => {
 });  
 
 app.get('/register', (req, res) => {
-  res.render("register");
+  const id = req.cookies['user_id'];
+  const templateVars = { 
+    user: users[id]
+  };
+  res.render("register", templateVars);
 });
 
 app.get('/login', (req, res) => {
-  res.render("login");
+  const id = req.cookies['user_id'];
+  const templateVars = { 
+    user: users[id]
+  };
+  res.render("login", templateVars);
+});
+
+app.get('*', (req, res) => {
+  console.log('Page does not exist');
+  res.redirect('/urls');
 });
 
 

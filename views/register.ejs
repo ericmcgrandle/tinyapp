@@ -9,10 +9,11 @@
 </head>
 <body>
 
+  <%- include('partials/_header') %>
 
-  <form action="/register" method="POST">
+  <form action="/register" method="POST" style="margin: 1em;">
     
-    <h1> Register </h1>
+    <h2 style="margin: 0.5em 0em;"> Register </h2>
     <p>Please Fill All Fields</p>
 
     <div class="form-group">
@@ -27,7 +28,7 @@
       <label for="password-repeat">Re-Enter Password</label>
       <input type="password" class="form-control" placeholder="Re-Enter Password" name="password-repeat" id="password-repeat" required>
     </div>
-    
+
       <button type="submit"> Register </button>
     
   </form>
