@@ -10,8 +10,9 @@ app.set("view engine", "ejs");
 
 //Database of shortened URL links
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" },
+  y54fge: { longURL: "https://www.lighthouselabs.ca", userID: "user2RandomID" }
 };
 
 //Database for users
@@ -19,12 +20,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "test"
+    password: "user"
   },
  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "dishwasher-funk"
+    password: "user2"
   }
 };
 
@@ -44,7 +45,6 @@ const lookupEmail = (email) => {
 };
 
 const lookupURL = (longURL) => {
-
   for (short in urlDatabase) {
     if (Object.values(urlDatabase[short]).indexOf(longURL) !== -1) {
       return short;
@@ -53,23 +53,60 @@ const lookupURL = (longURL) => {
   return false;
 };
 
+const isLoggedIn = (user_id) => {
+  for (user in users) {
+    if (user === user_id) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const filterUrl = (user_id) => {
+
+  const filtered = Object.values(urlDatabase).filter(key => key.userID === user_id);
+
+  const obj = {};
+  
+  for (url of filtered){
+    const shortURL = Object.keys(urlDatabase).find(elem => urlDatabase[elem] === url);
+    obj[shortURL] = url;
+  }
+    
+  // console.log(obj);
+  return obj;
+
+};
+
+filterUrl('user2RandomID')
+
+
 
 //app.get functions
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
-
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
 app.get("/urls", (req, res) => {
+
   const id = req.cookies['user_id'];
+
+  if (!isLoggedIn(id)) {
+    templateVars = {
+      urls: null,
+      user: null 
+    };
+    res.render('urls_index', templateVars);
+  } else {
+
+  const filteredURLS = filterUrl(id);
   const templateVars = { 
-    urls: urlDatabase,
+    urls: filteredURLS,
     user: users[id]
   };
   res.render("urls_index", templateVars);
+}
+
 });
 
 app.get("/urls/new", (req, res) => {
@@ -89,7 +126,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
 
-  const id = req.cookies['user_id'];
+   const id = req.cookies['user_id'];
   const templateVars = { 
     shortURL: req.params.shortURL, 
     longURL: urlDatabase[req.params.shortURL].longURL,
