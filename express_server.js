@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { response } = require("express");
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser()); 
@@ -16,17 +16,24 @@ const urlDatabase = {
   y54fge: { longURL: "https://www.lighthouselabs.ca", userID: "user2RandomID" }
 };
 
+//Passwords for example users
+const p1 = 'user';
+const hp1 = bcrypt.hashSync(p1, 10);
+const p2 = 'user2';
+const hp2 = bcrypt.hashSync(p2, 10);
+
+
 //Database for users
 const users = {
   "userRandomID": {
     ID: "userRandomID", 
     email: "user@example.com", 
-    password: "user"
+    password: hp1
   },
  "user2RandomID": {
     ID: "user2RandomID", 
     email: "user2@example.com", 
-    password: "user2"
+    password: hp2
   }
 };
 
@@ -222,11 +229,11 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
 app.post('/login', (req, res) => {
 
   const email = req.body.email;
-  const password = req.body.password;
+  const password = req.body.password;  
   
   //Check if user exists
   if (lookupEmail(email)){
-    if (users[user].password === password){
+    if (bcrypt.compareSync(password, users[user].password)) {
       res.cookie('user_ID', users[user].ID);
       res.redirect('/urls');
       return;
@@ -268,7 +275,7 @@ app.post('/register', (req, res) => {
 
   //registration if all good
   const userEmail = req.body.email;
-  const userPassword = req.body.password;
+  const userPassword = bcrypt.hashSync(req.body.password, 10);
   const userID = generateRandomString();
   res.cookie('user_ID', userID);
 
