@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const { response } = require("express");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser()); 
@@ -170,7 +171,6 @@ app.get('*', (req, res) => {
 //app.post functions
 app.post("/urls", (req, res) => {
   const ID = req.cookies['user_ID'];
-  console.log(ID);
   const longURL = req.body.longURL;
   let shortURL = generateRandomString();
 
@@ -178,27 +178,44 @@ app.post("/urls", (req, res) => {
   const exists = lookupURL(longURL);
 
   if (!exists) {
-    urlDatabase[shortURL] = { longURL: longURL, userId: ID };
+    urlDatabase[shortURL] = { longURL: longURL, userID: ID };
   } else {
     shortURL = exists;
   }
 
-  res.redirect(`/u/${shortURL}`);
+  // res.redirect(`/u/${shortURL}`);
   res.redirect('/urls');
 
 });
 
 app.post(`/urls/:shortURL/delete`, (req, res) => {
+  //Check if user is logged in
+  const ID = req.cookies['user_ID'];
+  if (!isLoggedIn(ID)) {
+    response.statusCode = 405;
+    console.log('Tried to delete when not logged in!');
+    res.end();
+    return;
+  }
+
   const shortURL = req.params.shortURL;
   delete urlDatabase[shortURL];
   res.redirect('/urls');
 });
 
 app.post(`/urls/:shortURL/update`, (req, res) => {
+  //Check if user is logged in
   const ID = req.cookies['user_ID'];
+  if (!isLoggedIn(ID)) {
+    response.statusCode = 405;
+    console.log('Tried to delete when not logged in!');
+    res.end();
+    return;
+  }
+
   const longURL = req.body.update;
   const shortURL = req.params.shortURL;
-  urlDatabase[shortURL] = { longURL: longURL, userId: ID };
+  urlDatabase[shortURL] = { longURL: longURL, userID: ID };
   res.redirect('/urls');
 });
 
@@ -252,11 +269,11 @@ app.post('/register', (req, res) => {
   //registration if all good
   const userEmail = req.body.email;
   const userPassword = req.body.password;
-  const userId = generateRandomString();
-  res.cookie('user_ID', userId);
+  const userID = generateRandomString();
+  res.cookie('user_ID', userID);
 
   //add to object
-  users[userId] = { ID: userId, email: userEmail, password: userPassword };
+  users[userID] = { ID: userID, email: userEmail, password: userPassword };
   res.redirect('/urls');
 });
 
