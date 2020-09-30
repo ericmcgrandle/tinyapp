@@ -7,7 +7,7 @@ const generateRandomString = () => {
 const lookupEmail = (email, users) => {
   for (user in users){
     if (Object.values(users[user]).includes(email)) {
-      return true;
+      return users[user].ID;
     }
   }
   return false;
