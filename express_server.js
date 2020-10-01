@@ -170,9 +170,10 @@ app.post("/urls", (req, res) => {
     if (!urlDatabase[exists].userID.includes(users[ID].ID)) {
       urlDatabase[exists].userID.push(users[ID].ID);
     }
+    shortURL = exists;
   }
 
-  res.redirect('/urls');
+  res.redirect(`/urls/${shortURL}`);
 
 });
 
