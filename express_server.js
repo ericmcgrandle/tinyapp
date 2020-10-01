@@ -13,7 +13,7 @@ const methodOverride = require('method-override');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
   name: "session",
-  keys: ['key1']
+  keys: ['invisiblekey', 'youdontseeme']
 }));
 app.use(methodOverride('_method'));
 app.set("view engine", "ejs");
@@ -108,7 +108,7 @@ app.get("/urls/:shortURL", (req, res) => {
     const templateVars = {
       statusCode: 405,
       msg: "trying to accessing a URL that does not exist"
-    }
+    };
     res.render('error', templateVars);
     return;
   }
@@ -119,7 +119,7 @@ app.get("/urls/:shortURL", (req, res) => {
     const templateVars = {
       statusCode: 405,
       msg: "attempting to access something when you weren't logged in!"
-    }
+    };
     res.render('error', templateVars);
     return;
   }
@@ -130,7 +130,7 @@ app.get("/urls/:shortURL", (req, res) => {
     const templateVars = {
       statusCode: 405,
       msg: "trying to accessing a URL that you haven't made"
-    }
+    };
     res.render('error', templateVars);
     return;
   }
@@ -152,7 +152,7 @@ app.get("/u/:shortURL", (req, res) => {
     const templateVars = {
       statusCode: 405,
       msg: "attempting to access a URL that doesn't exist!"
-    }
+    };
     res.render('error', templateVars);
     return;
   }
@@ -246,7 +246,7 @@ app.post('/login', (req, res) => {
       const templateVars = {
         user: users[ID],
         msg: 'Wrong Email / Password'
-      }
+      };
       res.render('login', templateVars);
       return;
     }
@@ -256,7 +256,7 @@ app.post('/login', (req, res) => {
   const templateVars = {
     user: users[ID],
     msg: 'Wrong Email / Password'
-  }
+  };
   res.render('login', templateVars);
 });
 
@@ -271,10 +271,10 @@ app.post('/register', (req, res) => {
   //If passwords did not match
   if (req.body.password !== req.body['password-repeat']) {
     res.statusCode = 400;
-      const templateVars = {
-        user: users[ID],
-        msg: 'Passwords did not match'
-      }
+    const templateVars = {
+      user: users[ID],
+      msg: 'Passwords did not match'
+    };
     res.render('register', templateVars);
     return;
   }
@@ -282,10 +282,10 @@ app.post('/register', (req, res) => {
   //if user already exists
   if (helpers.lookupEmail(req.body.email, users)) {
     res.statusCode = 400;
-      const templateVars = {
-        user: users[ID],
-        msg: 'Email already exists'
-      }
+    const templateVars = {
+      user: users[ID],
+      msg: 'Email already exists'
+    };
     res.render('register', templateVars);
     return;
   }
