@@ -16,6 +16,12 @@
     <h2 style="margin: 0.5em 0em;"> Register </h2>
     <p>Please Fill All Fields</p>
 
+    <% if (msg === 'Email already exists') { %>
+      <p>Email aready exists. Want to <a href="/login">Login</a>?</p>
+    <% } else if (msg === 'Passwords did not match') { %>
+      <p>Passwords did not match</p>
+    <% } %>
+
     <div class="form-group">
       <label for="email">Email</label>
       <input type="email" class="form-control" placeholder="Enter Email" name="email" id="email" required>

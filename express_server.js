@@ -168,7 +168,8 @@ app.get('/register', (req, res) => {
   }
   
   const templateVars = {
-    user: users[ID]
+    user: users[ID],
+    msg: ''
   };
   res.render("register", templateVars);
 });
@@ -284,22 +285,27 @@ app.post('/logout', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
+  const ID = req.session.user_id;
 
   //If passwords did not match
   if (req.body.password !== req.body['password-repeat']) {
-    //TODO, add message to html form that passwords did not match
-    console.log('Passwords did not match');
     res.statusCode = 400;
-    res.redirect('/register');
+      const templateVars = {
+        user: users[ID],
+        msg: 'Passwords did not match'
+      }
+    res.render('register', templateVars);
     return;
   }
 
   //if user already exists
   if (helpers.lookupEmail(req.body.email, users)) {
-    //TODO, add message to html form that user already exists
-    console.log('User already exists');
     res.statusCode = 400;
-    res.redirect('/register');
+      const templateVars = {
+        user: users[ID],
+        msg: 'Email already exists'
+      }
+    res.render('register', templateVars);
     return;
   }
 
