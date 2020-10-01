@@ -19,9 +19,9 @@ app.set("view engine", "ejs");
 
 //Database of URL links
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: ["userRandomID"], date: 'Thu Sept 27 2020 : 4:33:42 PM' },
-  i3BoGr: { longURL: "https://www.google.ca", userID: ["user2RandomID", "userRandomID"], date: 'Thu Oct 01 2020 : 7:58:53 PM' },
-  y54fge: { longURL: "https://www.lighthouselabs.ca", userID: ["user2RandomID"], date: 'Thu Sept 29 2020 : 3:24:86 PM' }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: ["userRandomID"], date: 'Thu Sept 27 2020 : 4:33:42 PM', count: 0 },
+  i3BoGr: { longURL: "https://www.google.ca", userID: ["user2RandomID", "userRandomID"], date: 'Thu Oct 01 2020 : 7:58:53 PM', count: 0 },
+  y54fge: { longURL: "https://www.lighthouselabs.ca", userID: ["user2RandomID"], date: 'Thu Sept 29 2020 : 3:24:86 PM', count: 0 }
 };
 
 //Passwords for example users
@@ -143,6 +143,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
+  const count = urlDatabase[shortURL].count++;
   
   //if shortURL does not exist in DB
   if (!urlDatabase[shortURL]) {
@@ -213,7 +214,7 @@ app.post("/urls", (req, res) => {
   const exists = helpers.lookupURL(longURL, urlDatabase);
 
   if (!exists) {
-    urlDatabase[shortURL] = { longURL: longURL, userID: [ID], date: date };
+    urlDatabase[shortURL] = { longURL: longURL, userID: [ID], date: date, count: 0 };
   } else {
     if (!urlDatabase[exists].userID.includes(users[ID].ID)) {
       urlDatabase[exists].userID.push(users[ID].ID);

@@ -23,6 +23,8 @@
           <th scope="col">Date Originally Created</th>
           <th scope="col">Edit</th>
           <th scope="col">Delete</th>
+          <!-- Vists Via shortURL refers to how many times someone used /u/:shortURL to visit the longURL page -->
+          <th scope="col">Vists Via shortURL</th>
         </tr>
       </thead>
       <tbody>
@@ -41,6 +43,7 @@
                 <button type="submit" class="btn btn-danger">Delete</button>
               </form>
             </td>
+            <td><%= urls[url].count %></td>
           </tr>
         <% } %>
       </tbody>
