@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const helpers = require('./helpers');
+const { isLoggedIn } = require("./helpers");
 
 
 //app.use
@@ -19,9 +20,9 @@ app.set("view engine", "ejs");
 
 //Database of URL links
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" },
-  y54fge: { longURL: "https://www.lighthouselabs.ca", userID: "user2RandomID" }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: ["userRandomID"] },
+  i3BoGr: { longURL: "https://www.google.ca", userID: ["user2RandomID", "userRandomID"] },
+  y54fge: { longURL: "https://www.lighthouselabs.ca", userID: ["user2RandomID"] }
 };
 
 //Passwords for example users
@@ -45,12 +46,22 @@ const users = {
 };
 
 
-
+helpers.filterUrl('userRandomID', urlDatabase);
 /*
 =================
 app.get functions
 =================
 */
+
+app.get("/", (req, res) => {
+  const ID = req.session.user_id;
+
+  if (helpers.isLoggedIn(ID, users)) {
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
+});
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
@@ -73,7 +84,6 @@ app.get("/urls", (req, res) => {
     };
     res.render("urls_index", templateVars);
   }
-
 });
 
 app.get("/urls/new", (req, res) => {
@@ -155,12 +165,13 @@ app.post("/urls", (req, res) => {
   const exists = helpers.lookupURL(longURL, urlDatabase);
 
   if (!exists) {
-    urlDatabase[shortURL] = { longURL: longURL, userID: ID };
+    urlDatabase[shortURL] = { longURL: longURL, userID: [ID] };
   } else {
-    shortURL = exists;
+    if (!urlDatabase[exists].userID.includes(users[ID].ID)) {
+      urlDatabase[exists].userID.push(users[ID].ID);
+    }
   }
 
-  // res.redirect(`/u/${shortURL}`);
   res.redirect('/urls');
 
 });
