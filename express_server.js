@@ -62,10 +62,6 @@ app.get("/", (req, res) => {
   }
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
 app.get("/urls", (req, res) => {
   const ID = req.session.user_id;
 
@@ -156,6 +152,11 @@ app.get(`/urls/:shortURL/update`, (req, res) => {
 
 app.get('/register', (req, res) => {
   const ID = req.session.user_id;
+
+  if (helpers.isLoggedIn(ID, users)) {
+    res.redirect('/urls');
+  }
+  
   const templateVars = {
     user: users[ID]
   };
@@ -164,6 +165,11 @@ app.get('/register', (req, res) => {
 
 app.get('/login', (req, res) => {
   const ID = req.session.user_id;
+
+  if (helpers.isLoggedIn(ID, users)) {
+    res.redirect('/urls');
+  }
+
   const templateVars = {
     user: users[ID]
   };
