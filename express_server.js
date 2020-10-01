@@ -1,13 +1,11 @@
 //require
 const express = require("express");
 const app = express();
-const PORT = 8080;
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const helpers = require('./helpers');
 const methodOverride = require('method-override');
-
 
 //app.use
 app.use(bodyParser.urlencoded({extended: true}));
@@ -17,6 +15,7 @@ app.use(cookieSession({
 }));
 app.use(methodOverride('_method'));
 app.set("view engine", "ejs");
+const PORT = 8080;
 
 
 //Database of URL links
@@ -46,8 +45,6 @@ const users = {
   }
 };
 
-
-helpers.filterUrl('userRandomID', urlDatabase);
 /*
 =================
 app.get functions
@@ -81,6 +78,25 @@ app.get("/urls", (req, res) => {
     };
     res.render("urls_index", templateVars);
   }
+});
+
+app.get('/login', (req, res) => {
+  const ID = req.session.user_id;
+
+  if (helpers.isLoggedIn(ID, users)) {
+    res.redirect('/urls');
+  }
+
+  const templateVars = {
+    user: users[ID],
+    msg: ''
+  };
+  res.render("login", templateVars);
+});
+
+app.get('*', (req, res) => {
+  console.log('Page does not exist');
+  res.redirect('/urls');
 });
 
 app.get("/urls/new", (req, res) => {
@@ -178,25 +194,6 @@ app.get('/register', (req, res) => {
     msg: ''
   };
   res.render("register", templateVars);
-});
-
-app.get('/login', (req, res) => {
-  const ID = req.session.user_id;
-
-  if (helpers.isLoggedIn(ID, users)) {
-    res.redirect('/urls');
-  }
-
-  const templateVars = {
-    user: users[ID],
-    msg: ''
-  };
-  res.render("login", templateVars);
-});
-
-app.get('*', (req, res) => {
-  console.log('Page does not exist');
-  res.redirect('/urls');
 });
 
 
@@ -333,11 +330,6 @@ app.put(`/urls/:shortURL/update`, (req, res) => {
   urlDatabase[shortURL] = { longURL: longURL, userID: ID, date: date, count: 0};
   res.redirect('/urls');
 });
-
-
-
-
-
 
 
 

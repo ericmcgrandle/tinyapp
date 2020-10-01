@@ -31,8 +31,6 @@ const isLoggedIn = (user_ID, users) => {
 };
 
 const filterUrl = (user_ID, urlDatabase) => {
-
-  
   const filtered = Object.values(urlDatabase).filter(key => key.userID.includes(user_ID));
   const obj = {};
   
