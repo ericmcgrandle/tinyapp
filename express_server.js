@@ -125,8 +125,11 @@ app.get("/urls/:shortURL", (req, res) => {
   //Check if user owns shortURL
   if (!urlDatabase[shortURL].userID.includes(ID)) {
     res.statusCode = 405;
-    console.log('Tried to access shortURL that is not owned by user!');
-    res.redirect('/urls');
+    const templateVars = {
+      statusCode: 405,
+      msg: "trying to accessing a URL that you haven't made"
+    }
+    res.render('error', templateVars);
     return;
   }
 
@@ -275,8 +278,13 @@ app.post('/login', (req, res) => {
       return;
     }
   }
+  //If user does not exist
   res.statusCode = 403;
-  res.redirect('/register');
+  const templateVars = {
+    user: users[ID],
+    msg: 'Wrong Email / Password'
+  }
+  res.render('login', templateVars);
 });
 
 app.post('/logout', (req, res) => {
