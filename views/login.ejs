@@ -14,6 +14,9 @@
   <form action="/login" method="POST" style="margin: 1em;">
     
     <h2 style="margin: 0.5em 0em;"> Login </h2>
+    <% if (msg === 'Wrong Email / Password') { %>
+      <p>Incorrect Email / Password</p>
+    <% } %>
 
     <div class="form-group">
       <label for="email">Email</label>

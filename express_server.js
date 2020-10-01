@@ -102,16 +102,23 @@ app.get("/urls/:shortURL", (req, res) => {
 
   //if shortURL does not exist in DB
   if (!urlDatabase[shortURL]) {
-    console.log('Attempt at accessing a URL that does not exist');
-    res.redirect('/urls');
+    res.statusCode = 405;
+    const templateVars = {
+      statusCode: 405,
+      msg: "trying to accessing a URL that does not exist"
+    }
+    res.render('error', templateVars);
     return;
   }
 
   //Check if user is logged in
   if (!helpers.isLoggedIn(ID, users)) {
     res.statusCode = 405;
-    console.log('Tried to access shortURL when not logged in!');
-    res.redirect('/login');
+    const templateVars = {
+      statusCode: 405,
+      msg: "attempting to access something when you weren't logged in!"
+    }
+    res.render('error', templateVars);
     return;
   }
 
@@ -134,10 +141,13 @@ app.get("/urls/:shortURL", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   
-    //if shortURL does not exist in DB
+  //if shortURL does not exist in DB
   if (!urlDatabase[shortURL]) {
-    console.log('Attempt at accessing a URL that does not exist');
-    res.redirect('/urls');
+    const templateVars = {
+      statusCode: 405,
+      msg: "attempting to access a URL that doesn't exist!"
+    }
+    res.render('error', templateVars);
     return;
   }
 
@@ -171,7 +181,8 @@ app.get('/login', (req, res) => {
   }
 
   const templateVars = {
-    user: users[ID]
+    user: users[ID],
+    msg: ''
   };
   res.render("login", templateVars);
 });
@@ -242,19 +253,24 @@ app.post(`/urls/:shortURL/update`, (req, res) => {
 
 app.post('/login', (req, res) => {
 
+  const ID = req.session.user_id;
   const email = req.body.email;
   const password = req.body.password;
   
   //Check if user exists
   if (helpers.lookupEmail(email, users)) {
+    //Validate password
     if (bcrypt.compareSync(password, users[user].password)) {
       req.session.user_id = users[user].ID;
       res.redirect('/urls');
       return;
     } else {
-      console.log('Wrong password');
       res.statusCode = 403;
-      res.redirect('/login');
+      const templateVars = {
+        user: users[ID],
+        msg: 'Wrong Email / Password'
+      }
+      res.render('login', templateVars);
       return;
     }
   }
