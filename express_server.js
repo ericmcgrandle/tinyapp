@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const helpers = require('./helpers');
+const methodOverride = require('method-override');
 
 
 //app.use
@@ -14,6 +15,7 @@ app.use(cookieSession({
   name: "session",
   keys: ['key1']
 }));
+app.use(methodOverride('_method'));
 app.set("view engine", "ejs");
 
 
@@ -226,37 +228,6 @@ app.post("/urls", (req, res) => {
 
 });
 
-app.post(`/urls/:shortURL/delete`, (req, res) => {
-  //Check if user is logged in
-  const ID = req.session.user_id;
-  if (!helpers.isLoggedIn(ID, users)) {
-    res.statusCode = 405;
-    console.log('Tried to delete when not logged in!');
-    res.end();
-    return;
-  }
-
-  const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
-  res.redirect('/urls');
-});
-
-app.post(`/urls/:shortURL/update`, (req, res) => {
-  //Check if user is logged in
-  const ID = req.session.user_id;
-  if (!helpers.isLoggedIn(ID, users)) {
-    res.statusCode = 405;
-    console.log('Tried to delete when not logged in!');
-    res.end();
-    return;
-  }
-
-  const longURL = req.body.update;
-  const shortURL = req.params.shortURL;
-  urlDatabase[shortURL] = { longURL: longURL, userID: ID };
-  res.redirect('/urls');
-});
-
 app.post('/login', (req, res) => {
 
   const ID = req.session.user_id;
@@ -329,6 +300,40 @@ app.post('/register', (req, res) => {
   users[userID] = { ID: userID, email: userEmail, password: userPassword };
   res.redirect('/urls');
 });
+
+
+app.delete(`/urls/:shortURL/delete`, (req, res) => {
+  //Check if user is logged in
+  const ID = req.session.user_id;
+  if (!helpers.isLoggedIn(ID, users)) {
+    res.statusCode = 405;
+    console.log('Tried to delete when not logged in!');
+    res.end();
+    return;
+  }
+
+  const shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL];
+  res.redirect('/urls');
+});
+
+app.put(`/urls/:shortURL/update`, (req, res) => {
+  //Check if user is logged in
+  const ID = req.session.user_id;
+  if (!helpers.isLoggedIn(ID, users)) {
+    res.statusCode = 405;
+    console.log('Tried to delete when not logged in!');
+    res.end();
+    return;
+  }
+
+  const date = helpers.getTime();
+  const longURL = req.body.update;
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = { longURL: longURL, userID: ID, date: date, count: 0};
+  res.redirect('/urls');
+});
+
 
 
 
