@@ -19,9 +19,9 @@ app.set("view engine", "ejs");
 
 //Database of URL links
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: ["userRandomID"] },
-  i3BoGr: { longURL: "https://www.google.ca", userID: ["user2RandomID", "userRandomID"] },
-  y54fge: { longURL: "https://www.lighthouselabs.ca", userID: ["user2RandomID"] }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: ["userRandomID"], date: 'Thu Sept 27 2020 : 4:33:42 PM' },
+  i3BoGr: { longURL: "https://www.google.ca", userID: ["user2RandomID", "userRandomID"], date: 'Thu Oct 01 2020 : 7:58:53 PM' },
+  y54fge: { longURL: "https://www.lighthouselabs.ca", userID: ["user2RandomID"], date: 'Thu Sept 29 2020 : 3:24:86 PM' }
 };
 
 //Passwords for example users
@@ -207,12 +207,13 @@ app.post("/urls", (req, res) => {
   const ID = req.session.user_id;
   const longURL = req.body.longURL;
   let shortURL = helpers.generateRandomString();
+  const date = helpers.getTime();
 
   //Check if longURL already exists
   const exists = helpers.lookupURL(longURL, urlDatabase);
 
   if (!exists) {
-    urlDatabase[shortURL] = { longURL: longURL, userID: [ID] };
+    urlDatabase[shortURL] = { longURL: longURL, userID: [ID], date: date };
   } else {
     if (!urlDatabase[exists].userID.includes(users[ID].ID)) {
       urlDatabase[exists].userID.push(users[ID].ID);

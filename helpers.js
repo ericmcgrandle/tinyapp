@@ -43,11 +43,19 @@ const filterUrl = (user_ID, urlDatabase) => {
   return obj;
 };
 
+const getTime = () => {
+  const date = new Date();
+  const day = date.toDateString();
+  const time = date.toLocaleTimeString();
+  return (day + " : " + time);
+};
+
 
 module.exports = ({ 
   generateRandomString, 
   lookupEmail, 
   lookupURL, 
   isLoggedIn,
-  filterUrl
+  filterUrl,
+  getTime
 });
