@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const helpers = require('./helpers');
-const { isLoggedIn } = require("./helpers");
 
 
 //app.use
@@ -103,8 +102,33 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const ID = req.session.user_id;
+  const shortURL = req.params.shortURL;
+
+  //if shortURL does not exist in DB
+  if (!urlDatabase[shortURL]) {
+    console.log('Attempt at accessing a URL that does not exist');
+    res.redirect('/urls');
+    return;
+  }
+
+  //Check if user is logged in
+  if (!helpers.isLoggedIn(ID, users)) {
+    res.statusCode = 405;
+    console.log('Tried to access shortURL when not logged in!');
+    res.redirect('/login');
+    return;
+  }
+
+  //Check if user owns shortURL
+  if (!urlDatabase[shortURL].userID.includes(ID)) {
+    res.statusCode = 405;
+    console.log('Tried to access shortURL that is not owned by user!');
+    res.redirect('/urls');
+    return;
+  }
+
   const templateVars = {
-    shortURL: req.params.shortURL,
+    shortURL: shortURL,
     longURL: urlDatabase[req.params.shortURL].longURL,
     user: users[ID]
   };
@@ -114,9 +138,11 @@ app.get("/urls/:shortURL", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   
+    //if shortURL does not exist in DB
   if (!urlDatabase[shortURL]) {
     console.log('Attempt at accessing a URL that does not exist');
     res.redirect('/urls');
+    return;
   }
 
   const longURL = urlDatabase[shortURL].longURL;
