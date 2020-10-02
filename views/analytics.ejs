@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics</title>
+</head>
+<body>
+  <!-- Analytics -->
+  <div class="card-body">
+    <table>
+
+      <% for(data in analytics) { %>
+        <tr>
+          <tc>
+            <td style="padding: 0.25em;">Time : <%= data %> =</td>
+          </tc>
+          <tc>
+            <td style="padding: 0.25em;"> ID : <%= analytics[data].Id %> =</td>
+          </tc>
+          <tc>
+            <td style="padding: 0.25em;">URL : <%= analytics[data].URL %></td>
+          </tc>
+      <% } %>
+      </table>
+  </div>
+  
+</body>
+</html>

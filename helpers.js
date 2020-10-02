@@ -48,7 +48,6 @@ const getTime = () => {
   return (day + " : " + time);
 };
 
-
 module.exports = ({ 
   generateRandomString, 
   lookupEmail, 

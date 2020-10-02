@@ -45,6 +45,17 @@ const users = {
   }
 };
 
+//Analytics DB and function
+const analytics = {
+
+};
+
+const track = (ID, url) => {
+  const date = helpers.getTime();
+  analytics[date] = {Id: ID, URL: url};
+  return;
+};
+
 /*
 =================
 app.get functions
@@ -53,6 +64,7 @@ app.get functions
 
 app.get("/", (req, res) => {
   const ID = req.session.user_id;
+  track(ID, '/');
 
   if (helpers.isLoggedIn(ID, users)) {
     res.redirect('/urls');
@@ -76,12 +88,14 @@ app.get("/urls", (req, res) => {
       urls: filteredURLS,
       user: users[ID]
     };
+    track(ID, '/urls');
     res.render("urls_index", templateVars);
   }
 });
 
 app.get('/login', (req, res) => {
   const ID = req.session.user_id;
+  track(ID, '/login');
 
   if (helpers.isLoggedIn(ID, users)) {
     res.redirect('/urls');
@@ -95,8 +109,9 @@ app.get('/login', (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-
+  
   if (!req.session.user_id) {
+    track('guest', '/urls/new');
     res.redirect('/login');
     return;
   }
@@ -106,11 +121,13 @@ app.get("/urls/new", (req, res) => {
     urls: urlDatabase,
     user: users[ID]
   };
+  track(ID, '/urls/new');
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const ID = req.session.user_id;
+  track(ID, '/urls/:shortURL');
   const shortURL = req.params.shortURL;
 
   //if shortURL does not exist in DB
@@ -173,12 +190,14 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get(`/urls/:shortURL/update`, (req, res) => {
+  track(req.session.user_id, '/urls/:shortURL/update');
   const shortURL = req.params.shortURL;
   res.redirect(`/urls/${shortURL}`);
 });
 
 app.get('/register', (req, res) => {
   const ID = req.session.user_id;
+  track(ID, '/register');
 
   if (helpers.isLoggedIn(ID, users)) {
     res.redirect('/urls');
@@ -191,10 +210,17 @@ app.get('/register', (req, res) => {
   res.render("register", templateVars);
 });
 
-app.get('*', (req, res) => {
-  console.log('Page does not exist');
-  res.redirect('/urls');
+app.get('/analytics', (req, res) => {
+  const templateVars = { 
+    analytics
+  };
+  res.render('analytics', templateVars);
 });
+
+// app.get('*', (req, res) => {
+//   console.log('Page does not exist');
+//   res.redirect('/urls');
+// });
 
 
 
@@ -337,3 +363,6 @@ app.put(`/urls/:shortURL/update`, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
+module.exports = { analytics };
