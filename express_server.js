@@ -217,10 +217,10 @@ app.get('/analytics', (req, res) => {
   res.render('analytics', templateVars);
 });
 
-// app.get('*', (req, res) => {
-//   console.log('Page does not exist');
-//   res.redirect('/urls');
-// });
+app.get('*', (req, res) => {
+  console.log('Page does not exist');
+  res.redirect('/urls');
+});
 
 
 
