@@ -94,11 +94,6 @@ app.get('/login', (req, res) => {
   res.render("login", templateVars);
 });
 
-app.get('*', (req, res) => {
-  console.log('Page does not exist');
-  res.redirect('/urls');
-});
-
 app.get("/urls/new", (req, res) => {
 
   if (!req.session.user_id) {
@@ -194,6 +189,11 @@ app.get('/register', (req, res) => {
     msg: ''
   };
   res.render("register", templateVars);
+});
+
+app.get('*', (req, res) => {
+  console.log('Page does not exist');
+  res.redirect('/urls');
 });
 
 
