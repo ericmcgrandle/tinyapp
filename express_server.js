@@ -211,8 +211,11 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/analytics', (req, res) => {
+  const ID = req.session.user_id;
+  
   const templateVars = { 
-    analytics
+    analytics,
+    user: users[ID]
   };
   res.render('analytics', templateVars);
 });
